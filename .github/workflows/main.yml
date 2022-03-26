@@ -55,6 +55,9 @@ jobs:
       - name: installing dependencies
         run: flutter pub get
       
+      - name: check ipk option
+        run: flutter build ipa -h
+
       - name: prepare for android build
         run: flutter build ios --release --no-codesign
             
