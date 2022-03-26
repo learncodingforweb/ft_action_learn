@@ -7,7 +7,8 @@ on:
       - main
 
 jobs:
-  build:
+  build_android:
+    name: android app
     runs-on: ubuntu-latest
     
     steps:
@@ -29,8 +30,36 @@ jobs:
       - name: prepare for android build
         run: flutter build apk
             
-      - name: release app
+      - name: release apk
         uses: actions/upload-artifact@v3
         with:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
+
+  build_ios:
+    runs-on: macOS-latest
+    name: ios app
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'microsoft'
+          java-version: "11"
+    
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.10.3'
+          channel: 'stable'
+      - run: flutter --version
+
+      - name: installing dependencies
+        run: flutter pub get
+      
+      - name: prepare for android build
+        run: flutter build ios --release --no-codesign
+            
+      - name: release app
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build
+          path: build/ios/iphoneos
