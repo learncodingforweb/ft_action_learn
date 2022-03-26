@@ -1,0 +1,35 @@
+
+name: flutter App build
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          java-version: "11"
+    
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.10.3'
+          channel: 'stable'
+      - run: flutter --version
+
+      - name: installing dependencies
+        run: flutter pub get
+      
+      - name: prepare for android build
+        run: flutter build apk
+            
+      - name: release app
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
