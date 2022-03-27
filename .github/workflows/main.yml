@@ -33,12 +33,14 @@ jobs:
       - name: release apk
         uses: actions/upload-artifact@v3
         with:
-          name: app-release
+          name: apk-${{ github.run_number }}
           path: build/app/outputs/flutter-apk/app-release.apk
 
   build_ios:
     runs-on: macOS-latest
     name: ios app
+    needs: [build_android]
+    
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v2
@@ -59,10 +61,17 @@ jobs:
         run: flutter build ipa -h
 
       - name: prepare for android build
-        run: flutter build ios --release --no-codesign
-            
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphones
+          mkdir Payload
+          cd Payload
+          ln - ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+          
       - name: release app
         uses: actions/upload-artifact@v3
         with:
-          name: ios-build
-          path: build/ios/iphoneos
+          name: ios-${{ github.run_number }}
+          path: build/ios/iphoneos/app.ipa
