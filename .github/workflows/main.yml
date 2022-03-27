@@ -63,10 +63,10 @@ jobs:
       - name: prepare for android build
         run: |
           flutter build ios --release --no-codesign
-          cd build/ios/iphones
+          cd build/ios/iphoneos
           mkdir Payload
           cd Payload
-          ln - ../Runner.app
+          ln -s ../Runner.app
           cd ..
           zip -r app.ipa Payload
           
